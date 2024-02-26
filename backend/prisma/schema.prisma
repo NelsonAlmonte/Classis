@@ -39,13 +39,95 @@ model Roles_Permissions {
 }
 
 model Users {
-  id       Int    @id @default(autoincrement())
-  name     String
-  last     String
-  image    String
-  username String @unique
-  password String
-  email    String @unique
-  role     Roles  @relation(fields: [roleId], references: [id])
-  roleId   Int
+  id                Int                 @id @default(autoincrement())
+  name              String
+  last              String
+  image             String
+  username          String              @unique
+  password          String
+  email             String              @unique
+  role              Roles               @relation(fields: [roleId], references: [id])
+  roleId            Int
+  Students_Sessions Students_Sessions[]
+  Sessions          Sessions[]
+  Students_Homework Students_Homework[]
+}
+
+model Subjects {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  image       String
+  description String
+  Sessions    Sessions[]
+}
+
+model Sessions {
+  id          Int      @id @default(autoincrement())
+  name        String
+  image       String
+  description String
+  code        String   @unique
+  teacher     Users    @relation(fields: [teacherId], references: [id])
+  teacherId   Int
+  subject     Subjects @relation(fields: [subjectId], references: [id])
+  subjectId   Int
+
+  Students_Sessions Students_Sessions[]
+  Announcements     Announcements[]
+  Resources         Resources[]
+  Homework          Homework[]
+}
+
+model Students_Sessions {
+  student   Users    @relation(fields: [studentId], references: [id])
+  studentId Int
+  session   Sessions @relation(fields: [sessionId], references: [id])
+  sessionId Int
+
+  @@id([studentId, sessionId])
+}
+
+model Announcements {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  start_date  DateTime @default(now())
+  session     Sessions @relation(fields: [sessionId], references: [id])
+  sessionId   Int
+}
+
+model Resources {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  start_date  DateTime @default(now())
+  file        String
+  session     Sessions @relation(fields: [sessionId], references: [id])
+  sessionId   Int
+}
+
+model Homework {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  description       String
+  score             Int
+  file              String
+  start_date        DateTime
+  end_date          DateTime
+  session           Sessions            @relation(fields: [sessionId], references: [id])
+  sessionId         Int
+  Students_Homework Students_Homework[]
+}
+
+model Students_Homework {
+  id              Int      @id @default(autoincrement())
+  student         Users    @relation(fields: [studentId], references: [id])
+  studentId       Int
+  homework        Homework @relation(fields: [homeworkId], references: [id])
+  homeworkId      Int
+  score           Int
+  file            String
+  student_comment String
+  teacher_comment String
+  delivery_date   DateTime @default(now())
 }
