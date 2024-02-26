@@ -5,6 +5,7 @@ import { PrismaService } from './prisma.service';
 import { SubjectModule } from './subject/subject.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '..'),
       renderPath: '/uploads',
     }),
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
